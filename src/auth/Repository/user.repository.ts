@@ -21,6 +21,13 @@ return
 async find():Promise<User[]>{
     return await this.repository.find()
 }
+async findByEmail(email:string):Promise<User>{
+    return await this.repository.findOne({
+        where:{
+            email
+        }
+    })
+}
 async delete(){
     // this.dataSource.getMongoRepository(User)
     this.repository.delete({

@@ -1,13 +1,18 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from './user/user.module';
+// import { UserModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule ,} from '@nestjs/typeorm';
 import configuration from './config/config'
-import { User } from './user/Entities/user.Entity';
+// import { User } from './user/Entities/user.Entity';
 import {DataSource}from 'typeorm'
+import { AuthModule } from './auth/auth.module';
+import { User } from './auth/Entities/user.Entity';
+import LogsMiddleware from './Logging/LogMiddleware';
+import DatabaseLogger from './Logging/databaseLogger';
+import { LoggerModule } from './Logging/logger.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,7 +35,7 @@ import {DataSource}from 'typeorm'
         // password:String(databaseConstants.password),
         // database: configService.get('database.database'),
         // database:String(databaseConstants.database),
-        // logger: new DatabaseLogger(),
+        logger: new DatabaseLogger(),
 
         autoLoadEntities: true,
         synchronize: true,
@@ -44,10 +49,18 @@ import {DataSource}from 'typeorm'
       
       inject: [ConfigService],
     }),
-    UserModule
+    AuthModule,
+    LoggerModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LogsMiddleware)
+      .forRoutes('*');
+  }
+}
 
