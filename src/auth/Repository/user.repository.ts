@@ -1,5 +1,5 @@
 import { User } from "../Entities/user.Entity";
-import { EntityRepository, Repository, In, AbstractRepository, Like,DataSource } from "typeorm";
+import {  Repository,DataSource } from "typeorm";
 import { Injectable } from "@nestjs/common";
 import { UserPartial } from "../Entities/PartialTYpe";
 @Injectable()
@@ -27,6 +27,7 @@ async findByEmail(email:string):Promise<User>{
             email
         }
     })
+   
 }
 async delete(){
     // this.dataSource.getMongoRepository(User)

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -13,6 +14,9 @@ import { User } from './auth/Entities/user.Entity';
 import LogsMiddleware from './Logging/LogMiddleware';
 import DatabaseLogger from './Logging/databaseLogger';
 import { LoggerModule } from './Logging/logger.module';
+import { FollowersModule } from './followers/followers.module';
+import { PostsModule } from './posts/posts.module';
+import { LikeCommentReplyModule } from './like-comment-reply/like-comment-reply.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -51,6 +55,9 @@ import { LoggerModule } from './Logging/logger.module';
     }),
     AuthModule,
     LoggerModule,
+    FollowersModule,
+    PostsModule,
+    LikeCommentReplyModule,
 
   ],
   controllers: [AppController],

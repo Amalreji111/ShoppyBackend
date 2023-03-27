@@ -21,7 +21,7 @@ export class AuthController {
 
   @Post('login')
   async loginUser(@Body() loginDto: any, @Res() res: Response) {
-    const { token ,email,roles} = await this.authService.login(
+    const user= await this.authService.login(
       loginDto as UserLoginDto,
     );
     /*res.setHeader('Set-Cookie', token);
@@ -29,23 +29,23 @@ export class AuthController {
 */
 
     res.cookie('IsAuthenticated', true, { maxAge: 2 * 60 * 60 * 1000 });
-    res.cookie('Authentication', token, {
+    res.cookie('Authentication', user.token, {
       httpOnly: true,
       maxAge: 2 * 60 * 60 * 1000,
     }); // max age 2 hours
 
-    return res.status(201).json({ email: email, token:token,roles });
+    return user;
   }
 
   @Post('register')
  async registerUser(@Body() body: CreateUserDto, @Res() res: Response) {
-    const {token,email,role}=await this.authService.register(body);
+  const  user=await this.authService.register(body);
     res.cookie('IsAuthenticated', true, { maxAge: 2 * 60 * 60 * 1000 });
-    res.cookie('Authentication', token, {
+    res.cookie('Authentication', user.token, {
       httpOnly: true,
       maxAge: 2 * 60 * 60 * 1000,
     }); // max age 2 hours
-    return res.status(201).json({ email: email, token:token,role:role });
+    return user;
   }
 
   @Post('logout')
